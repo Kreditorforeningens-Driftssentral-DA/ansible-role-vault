@@ -1,0 +1,31 @@
+---
+galaxy_info:
+
+  role_name: nomad
+  author: Rune Rønneseth
+  description: HashiCorp Nomad (v0.10+)
+  company: Kreditorforeninges Driftssentral DA
+
+  license: GPLv3
+
+  galaxy_tags:
+    - hashicorp
+    - nomad
+    - scheduler
+
+  min_ansible_version: 2.6
+
+  platforms:
+    - name: CentOS
+      versions:
+        - 7
+
+    - name: Ubuntu
+      versions:
+        - 18.04
+
+    - name: PhotonOS
+      versions:
+        - 2.0
+
+dependencies: []

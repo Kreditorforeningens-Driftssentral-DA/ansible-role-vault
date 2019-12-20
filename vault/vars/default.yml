@@ -1,0 +1,12 @@
+# OS Paths (generic)
+# Based on http://www.pathname.com/fhs/pub/
+path_profile: /etc/profile.d
+#path_environment: /etc/environment.d
+path_packages: /opt
+path_binaries: /opt/bin
+path_settings: /etc/opt
+path_systemd: /etc/systemd/system
+path_storage: /var/opt
+path_logs: /var/opt/log
+path_runtime: /var/run
+path_temp: /tmp

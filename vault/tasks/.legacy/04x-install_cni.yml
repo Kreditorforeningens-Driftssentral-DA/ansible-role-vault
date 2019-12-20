@@ -1,0 +1,53 @@
+---
+
+- name: cni | Check if folders exist
+  stat:
+    path: "{{ item }}"
+  loop:
+  - "{{ cni_path }}"
+  - "{{ cni_path_tunables }}"
+  register: cni_folder_status
+
+- name: Create missing folders
+  become: true
+  file:
+    dest: "{{ item['item'] }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not item['stat']['exists'] | bool
+  loop: "{{ cni_folder_status.results }}"
+
+- name: cni | Check if archive already downloaded
+  stat:
+    path: "{{ path_temp }}/{{ cni_package_name }}.tgz"
+  register: cni_archive_status
+
+- name: cni | Download archive
+  get_url:
+    url: "{{ cni_package_url }}"
+    dest: "{{ path_temp }}"
+    checksum: "sha256:{{ cni_checksum_url }}"
+    validate_certs: false
+  when: not cni_archive_status['stat']['exists'] | bool
+
+- name: cni | Extract binaries
+  become: true
+  unarchive:
+    src: "{{ path_temp }}/{{ cni_package_name }}.tgz"
+    dest: "{{ cni_path }}"
+    remote_src: yes
+
+- name: cni | Add tunables settings
+  become: true
+  notify:
+  - reload_daemon
+  template:
+    dest: "{{ cni_path_tunables }}/{{ item }}"
+    src: "{{ item }}.j2"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  loop:
+  - 50-nomad_bridge.conf

@@ -1,0 +1,41 @@
+# https://help.github.com/en/actions/automating-your-workflow-with-github-actions
+---
+name: molecule
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "nomad/**"
+
+jobs:
+
+  nomad-molecule-tests:
+    runs-on: ubuntu-latest
+
+    container:
+      image: quay.io/ansible/molecule:latest
+      env:
+        PY_COLORS: 1
+        JOB_DOCKER_IMAGE: "centos:7"
+        JOB_DOCKER_COMMAND: "/usr/sbin/init"
+
+## 'container' mounts the host socket by default, and can spin up its own sub-containers
+#    services:
+#      docker:
+#        image: docker:dind
+#        env:
+#          DOCKER_TLS_CERTDIR: /certs
+#        ports:
+#          - 2376:2376
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v1
+        with:
+            fetch-depth: 1
+      - name: Run tests
+        run: |
+          cd nomad
+          molecule test

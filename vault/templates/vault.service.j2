@@ -1,0 +1,26 @@
+################################################################################
+# {{ ansible_managed }}
+################################################################################
+[Unit]
+Description="HashiCorp Nomad"
+Documentation=https://nomadproject.io/docs/
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart={{ path_binaries }}/{{ application }} agent \
+    -config {{ path_settings }}/{{ application }}.d/
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+KillSignal=SIGINT
+Restart=on-failure
+RestartSec=4
+StartLimitBurst=8
+StartLimitInterval=12
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
+################################################################################
+# {{ ansible_managed }}
+################################################################################

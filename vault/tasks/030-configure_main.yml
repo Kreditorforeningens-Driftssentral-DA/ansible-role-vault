@@ -1,0 +1,46 @@
+---
+
+  # Configure environment variables
+- name: CONFIGURE | {{ application }} environment
+  become: true
+  notify:
+  - reload_daemon
+  template:
+    dest: "/etc/profile.d/{{ item }}"
+    src: "{{ item }}.j2"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  loop:
+  - environment.sh
+  tags: ["configure"]
+
+  # Add configurationfiles to correct directory
+- name: CONFIGURE | {{ application }} settings
+  become: true
+  notify:
+  - reload_daemon
+  template:
+    dest: "{{ path_settings }}/{{ application }}.d/{{ item }}"
+    src: "{{ item }}.j2"
+    owner: "root"
+    group: "root"
+    mode: 0644
+  loop:
+  - settings.hcl
+  - plugins.hcl
+  tags: ["configure"]
+
+  # Create service definition (systemd unit)
+- name: CONFIGURE | {{ application }} unit definition
+  become: true
+  notify:
+    - reload_daemon
+    - restart_unit
+  template:
+    dest: "{{ path_systemd }}/{{ application }}.service"
+    src: "{{ application }}.service.j2"
+    owner: root
+    group: root
+    mode: 0644
+  tags: ["configure"]

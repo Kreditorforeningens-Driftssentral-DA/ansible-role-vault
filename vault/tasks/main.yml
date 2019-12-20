@@ -1,0 +1,29 @@
+---
+
+  # TODO: Include variables specific to your os
+- name: include OS variables
+  include_vars: default.yml
+
+# ------------------------------------------------------------------------------
+
+  # Run pre-tasks
+- name: pre-tasks
+  include: 010-pre_tasks.yml
+
+# ------------------------------------------------------------------------------
+
+  # Install main application
+- name: install {{ application }}
+  include: 020-install_main.yml
+
+# ------------------------------------------------------------------------------
+
+  # Configure application settings
+- name: configure {{ application }}
+  include: 030-configure_main.yml
+
+# ------------------------------------------------------------------------------
+
+  # Perform post-install tasks
+- name: post-tasks
+  include: 040-post_tasks.yml

@@ -1,0 +1,74 @@
+---
+
+  # Check if required folders are created
+- name: INSTALL | Check {{ application }} folders
+  stat:
+    path: "{{ item }}"
+  register: folder_status
+  loop:
+    - "{{ path_settings }}/{{ application }}.d"
+    - "{{ path_binaries }}"
+    - "{{ path_packages }}/{{ application }}/{{ version }}"
+    - "{{ path_systemd }}/{{ application }}.service.d"
+    - "{{ path_storage }}/{{ application }}"
+    - "{{ path_logs }}/{{ application }}"
+    - "{{ path_runtime }}/{{ application }}"
+  tags: ["install"]
+
+  # Create required folders
+- name: INSTALL | Create {{ application }} folders
+  become: true
+  file:
+    dest: "{{ item['item'] }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  when: not item['stat']['exists'] | bool
+  loop: "{{ folder_status.results }}"
+  tags: ["install"]
+
+# ------------------------------------------------------------------------------
+
+  # Check if application archive is on disk
+- name: INSTALL | Check {{ application }} archive
+  stat:
+    path: "{{ path_temp }}/{{ package_name }}.zip"
+  register: archive_status
+  tags: ["install"]
+
+  # Download application archive to disk
+- name: INSTALL | Download {{ application }} archive
+  get_url:
+    url: "{{ package_url }}"
+    dest: "{{ path_temp }}"
+    checksum: "sha256:{{ checksum_url }}"
+    validate_certs: false
+  register: download_status
+  when: not archive_status['stat']['exists'] | bool
+  tags: ["install"]
+
+# ------------------------------------------------------------------------------
+
+  # Extract binary
+- name: INSTALL | Extract {{ application }} binary
+  become: true
+  unarchive:
+    src: "{{ path_temp }}/{{ package_name }}.zip"
+    dest: "{{ path_packages }}/{{ application }}/{{ version }}"
+    remote_src: yes
+  tags: ["install"]
+
+  # Create symlink from binary to correct paths
+- name: INSTALL | Symlink {{ application }} binary
+  become: true
+  notify:
+  - restart_unit
+  file:
+    src: "{{ path_packages }}/{{ application }}/{{ version }}/{{ application }}"
+    path: "{{ item }}"
+    state: link
+  loop:
+    - "{{ path_binaries }}/{{ application }}"
+    - "/usr/sbin/{{ application }}" # Problem w/nomad only picking up this path
+  tags: ["install"]

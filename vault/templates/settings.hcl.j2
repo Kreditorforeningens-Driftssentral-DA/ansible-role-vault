@@ -1,0 +1,34 @@
+################################################################################
+# {{ ansible_managed }}
+################################################################################
+# ------------------------------------------------------------------------------
+#                                                              General settings
+# ------------------------------------------------------------------------------
+{% if storage_consul_enabled %}
+storage "consul" {
+  address = "{{ storage_consul_address | default('127.0.0.1:8500') }}"
+  path    = "{{ storage_consul_path | default('vault') }}"
+}
+{% else %}
+storage "file" {
+  path    = "{{ path_storage }}/{{ application }}/data"
+}
+{% endif %}
+
+listener "tcp" {
+  address = "127.0.0.1:8200"
+}
+
+{% if telemetry_enabled %}
+telemetry {
+}
+{% endif %}
+################################################################################
+# {{ ansible_managed }}
+
+################################################################################
+advertise {
+  http = "{{ ansible_default_ipv4['address'] }}"
+  rpc  = "{{ ansible_default_ipv4['address'] }}"
+  serf = "{{ ansible_default_ipv4['address'] }}"
+}

@@ -1,0 +1,18 @@
+---
+
+- name: reload_daemon
+  become: true
+  systemd:
+    daemon_reload: yes
+
+- name: restart_unit
+  become: true
+  systemd:
+    name: "{{ application }}"
+    state: restarted
+
+- name: restart_firewalld
+  become: true
+  systemd:
+    name: "firewalld"
+    state: restarted

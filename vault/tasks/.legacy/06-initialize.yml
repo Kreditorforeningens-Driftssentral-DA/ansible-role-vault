@@ -1,0 +1,11 @@
+---
+
+- name: start and enable unit
+  become: true
+  notify:
+  - reload_daemon
+  systemd:
+    name: "{{ application }}"
+    masked: no
+    enabled: yes
+    state: started

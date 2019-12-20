@@ -1,0 +1,37 @@
+---
+application: "vault"
+
+# Asserts (checks)
+os_supported:
+  - CentOS
+  - Container Linux by CoreOS
+  - VMware Photon OS
+
+# Host architecture
+os_arch_map:
+  amd64: "amd64"
+  x86_64: "amd64"
+host_arch: "{{ os_arch_map[ansible_architecture] | lower }}"
+
+# Application URL's
+hashicorp_releases_url: "https://releases.hashicorp.com"
+package_name: "{{ application }}_{{ version }}_{{ ansible_system | lower }}_{{ host_arch | lower }}"
+package_url:  "{{ hashicorp_releases_url }}/{{ application }}/{{ version }}/{{ package_name }}.zip"
+checksum_url: "{{ hashicorp_releases_url }}/{{ application }}/{{ version }}/{{ application }}_{{ version }}_SHA256SUMS"
+
+# Consul-Connect requirement (CNI)
+cni_releases_url: "https://github.com/containernetworking/plugins/releases/download"
+cni_package_name: "cni-plugins-{{ ansible_system | lower }}-{{ host_arch | lower }}-v{{ cni_version }}"
+cni_package_url: "{{ cni_releases_url }}/v{{ cni_version }}/{{ cni_package_name }}.tgz"
+cni_checksum_url: "{{ cni_releases_url }}/v{{ cni_version }}/{{ cni_package_name }}.tgz.sha256"
+
+# Community plugins
+plugin_dir: "{{ path_storage}}/{{ application }}/plugins"
+
+plugin_podman_releases_url: "https://github.com/pascomnet/nomad-driver-podman/releases/download"
+plugin_podman_package_name: "nomad-driver-podman_{{ ansible_system | lower }}_{{ host_arch | lower }}"
+plugin_podman_package_url: "{{ plugin_podman_releases_url }}/v{{ plugin_podman_version }}/{{ plugin_podman_package_name }}.tgz"
+
+plugin_singularity_releases_url: "https://github.com/sylabs/singularity/releases/download"
+plugin_singularity_package_name: "singularity-{{ plugin_singularity_version }}"
+plugin_singularity_package_url: "{{ plugin_singularity_releases_url }}/v{{ plugin_singularity_version }}/{{ plugin_singularity_package_name }}.tar.gz"

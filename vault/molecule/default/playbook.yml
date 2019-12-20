@@ -1,0 +1,11 @@
+---
+
+- name: Converge
+  hosts: standalone
+
+  vars:
+    cluster_name: "default"
+    client_enabled: true
+
+  roles:
+    - role: vault

@@ -1,0 +1,10 @@
+---
+
+  # Install/verify required software is installed
+- name: PREPARE | Install required packages
+  become: true
+  package:
+    name:
+      - unzip
+    state: present
+  tags: ["pre"]
