@@ -7,7 +7,7 @@ on:
     branches:
       - master
     paths:
-      - "nomad/**"
+      - "vault/**"
 
 jobs:
 
@@ -37,5 +37,5 @@ jobs:
             fetch-depth: 1
       - name: Run tests
         run: |
-          cd nomad
+          cd vault
           molecule test

@@ -13,9 +13,9 @@
     state: enabled
     port: "{{ item }}"
   loop:
-    - 4646-4648/tcp
-    - 20000-32000/tcp
-    - 4648/udp
+    - 7300-7301/tcp # Consul clients/Servers
+    - 7301/udp      # Consul clients/Servers
+    - 8200-8201/tcp # Vault API & Replication
   when: configure_firewalld
   tags: ["post"]
 

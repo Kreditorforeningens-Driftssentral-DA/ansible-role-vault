@@ -1,17 +1,17 @@
 ---
 galaxy_info:
 
-  role_name: nomad
+  role_name: vault
   author: Rune Rønneseth
-  description: HashiCorp Nomad (v0.10+)
+  description: HashiCorp Vault
   company: Kreditorforeninges Driftssentral DA
 
   license: GPLv3
 
   galaxy_tags:
     - hashicorp
-    - nomad
-    - scheduler
+    - vault
+    - secrets
 
   min_ansible_version: 2.6
 

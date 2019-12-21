@@ -4,22 +4,22 @@
 - name: CONFIGURE | {{ application }} environment
   become: true
   notify:
-  - reload_daemon
+    - reload_daemon
   template:
-    dest: "/etc/profile.d/{{ item }}"
+    dest: "/etc/profile.d/50-{{ item }}"
     src: "{{ item }}.j2"
     owner: "root"
     group: "root"
     mode: 0644
   loop:
-  - environment.sh
+    - vault.sh
   tags: ["configure"]
 
   # Add configurationfiles to correct directory
 - name: CONFIGURE | {{ application }} settings
   become: true
   notify:
-  - reload_daemon
+    - reload_daemon
   template:
     dest: "{{ path_settings }}/{{ application }}.d/{{ item }}"
     src: "{{ item }}.j2"
@@ -27,7 +27,7 @@
     group: "root"
     mode: 0644
   loop:
-  - settings.hcl
+    - settings.hcl
   tags: ["configure"]
 
   # Create service definition (systemd unit)
