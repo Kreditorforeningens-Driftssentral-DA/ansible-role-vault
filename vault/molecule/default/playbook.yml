@@ -4,8 +4,7 @@
   hosts: standalone
 
   vars:
-    cluster_name: "default"
-    client_enabled: true
+    listener_tcp_tls_disable: "true"
 
   roles:
     - role: vault

@@ -1,13 +1,22 @@
 ################################################################################
 # {{ ansible_managed }}
 ################################################################################
+
+ui = "{{ ui_enabled | default(false) | bool | lower }}"
+
 # ------------------------------------------------------------------------------
-#                                                              General settings
+#                                                              Storage settings
 # ------------------------------------------------------------------------------
+
 {% if storage_consul_enabled %}
 storage "consul" {
-  address = "{{ storage_consul_address | default('127.0.0.1:8500') }}"
-  path    = "{{ storage_consul_path | default('vault') }}"
+  address       = "{{ storage_consul_address | default('127.0.0.1:8500') }}"
+  token         = "{{ storage_consul_acl_token | default('') }}"
+  path          = "{{ storage_consul_path | default('vault') }}"
+  scheme        = "{{ storage_consul_scheme | default('http') }}"
+  service       = "{{ storage_consul_service_name | default('vault') }}"
+  service_tags  = "{{ storage_consul_service_tags | default('') }}"
+  check_timeout = "{{ storage_consul_check_timeout | default('15s') }}"
 }
 {% else %}
 storage "file" {
@@ -15,20 +24,43 @@ storage "file" {
 }
 {% endif %}
 
+#ha_storage "consul" {
+#}
+
+# ------------------------------------------------------------------------------
+#                                                             Listener settings
+# ------------------------------------------------------------------------------
+
+api_addr     = "{{ ha_api_address | default(ansible_default_ipv4['address']) }}"
+cluster_addr = "{{ ha_cluster_address | default(ansible_default_ipv4['address']) }}"
+
+{% if listener_local_enabled %}
 listener "tcp" {
-  address = "127.0.0.1:8200"
+  address     = "127.0.0.1:8200"
+  tls_disable = "true"
 }
+{% endif %}
+
+{% if listener_enabled %}
+listener "tcp" {
+  address     = "{{ listener_tcp_address | default(ansible_default_ipv4['address']) }}"
+  tls_disable = "{{ listener_tcp_tls_disable | default('false') }}"
+}
+{% endif %}
+
+# ------------------------------------------------------------------------------
+#                                                             Telemetry settings
+# ------------------------------------------------------------------------------
 
 {% if telemetry_enabled %}
 telemetry {
+  disable_hostname = "{{ telemetry_disable_hostname | default(false) | bool | lower }}"
+{% if telemetry_prometheus_enabled %}
+  telemetry_prometheus_retention_time: "{{ telemetry_prometheus_retention_time | default('24h') }}"
+{% endif %}
 }
 {% endif %}
-################################################################################
-# {{ ansible_managed }}
 
 ################################################################################
-advertise {
-  http = "{{ ansible_default_ipv4['address'] }}"
-  rpc  = "{{ ansible_default_ipv4['address'] }}"
-  serf = "{{ ansible_default_ipv4['address'] }}"
-}
+# {{ ansible_managed }}
+################################################################################

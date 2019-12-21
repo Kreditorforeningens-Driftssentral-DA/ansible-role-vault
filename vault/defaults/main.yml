@@ -1,74 +1,76 @@
 ---
 # General settings
 version: "1.3.0"
-ui: false
-cluster_name: "vault"
-cache_size: "32000"
-disable_cache: false
-disable_mlock: false # sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
-log_level: ""
-log_format: ""
-plugin_directory: ""
-default_lease_ttl: "768h"
-default_max_request_duration: "90s"
-raw_storage_endpoint: false
-pid_file: ""
-disable_sealwrap: false
-disable_performance_standby: false
-
-# HA parameters
-api_addr: ""
-cluster_addr: ""
-disable_clustering: false
+ui_enabled: false
+#cluster_name: "vault"
+#cache_size: "32000"
+#disable_cache: false
+#disable_mlock: false # sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
+#log_level: ""
+#log_format: ""
+#plugin_directory: ""
+#default_lease_ttl: "768h"
+#default_max_request_duration: "90s"
+#raw_storage_endpoint: false
+#pid_file: ""
+#disable_sealwrap: false
+#disable_performance_standby: false
 
 # Backend
 #   - https://www.vaultproject.io/docs/configuration/storage/index.html
 storage_consul_enabled: false
 storage_consul_address: "127.0.0.1:8500"
+storage_consul_acl_token: ""
 storage_consul_scheme: "http"
-storage_consul_check_timeout: "5s"
-storage_consul_consistency_mode: "default"
 storage_consul_path: "vault"
-storage_consul_disable_registration: "false"
-storage_consul_max_parralell: "128"
+storage_consul_check_timeout: "5s"
 storage_consul_service_name: "vault"
 storage_consul_service_tags: ""
+#storage_consul_consistency_mode: "default"
+#storage_consul_disable_registration: "false"
+#storage_consul_max_parralell: "128"
 #storage_consul_service_address: ""
-storage_consul_acl_token: ""
-storage_consul_session_ttl: "15s"
-storage_consul_locak_wait_time: "15s"
-storage_consul_tls_ca_file: ""
-storage_consul_tls_cert_file: ""
-storage_consul_tls_key_file: ""
-storage_consul_tls_min_version: "tls12"
-storage_consul_tls_skip_verify: "false"
+#storage_consul_session_ttl: "15s"
+#storage_consul_locak_wait_time: "15s"
+#storage_consul_tls_ca_file: ""
+#storage_consul_tls_cert_file: ""
+#storage_consul_tls_key_file: ""
+#storage_consul_tls_min_version: "tls12"
+#storage_consul_tls_skip_verify: "false"
+
+# HA Cluster parameters
+ha_api_address: "{{ ansible_default_ipv4['address'] }}" # Clients
+ha_cluster_address: "{{ ansible_default_ipv4['address'] }}" # Servers
+#ha_disable_clustering: false
 
 # Listener
 #   - https://www.vaultproject.io/docs/configuration/listener/tcp.html
-listener_tcp_address: "127.0.0.1:8200"
-listener_tcp_cluster_address: "127.0.0.1:8201"
-listener_tcp_http_idle_timeout: "5m"
-listener_tcp_http_read_header_timeout: "10s"
-listener_tcp_http_read_timeout: "30s"
-listener_tcp_htwrite_timeout: "0"
-listener_tcp_max_request_size: 33554432
-listener_tcp_max_request_duration: "90s"
-listener_tcp_proxy_protocol_behaviour: ""
-listener_tcp_proxy_protocol_authorized_addrs: []
-listener_tcp_tls_disable: "true"
-listener_tcp_tls_cert_file: ""
-listener_tcp_tls_key_file: ""
-listener_tcp_tls_min_version: "tls12"
-listener_tcp_tls_cipher_suites: ""
-listener_tcp_tls_prefer_server_cipher_suites: "false"
-listener_tcp_tls_require_and_verify_client_cert: "false"
-listener_tcp_tls_client_ca_file: ""
-listener_tcp_tls_disable_client_certs: "false"
-listener_tcp_x_forwarded_for_authorized_addrs: ""
-listener_tcp_x_forwarded_for_hop_skips: "0"
-listener_tcp_x_forwarded_for_reject_not_authorized: "true"
-listener_tcp_x_forwarded_for_reject_not_present: "true"
-listener_tcp_unauthenticated_metrics_access: "false"
+listener_local_enabled: true
+listener_enabled: true
+listener_tcp_address: "{{ ansible_default_ipv4['address'] }}"
+listener_tcp_tls_disable: "false"
+#listener_tcp_cluster_address: "127.0.0.1:8201"
+#listener_tcp_http_idle_timeout: "5m"
+#listener_tcp_http_read_header_timeout: "10s"
+#listener_tcp_http_read_timeout: "30s"
+#listener_tcp_htwrite_timeout: "0"
+#listener_tcp_max_request_size: 33554432
+#listener_tcp_max_request_duration: "90s"
+#listener_tcp_proxy_protocol_behaviour: ""
+#listener_tcp_proxy_protocol_authorized_addrs: []
+#listener_tcp_tls_cert_file: ""
+#listener_tcp_tls_key_file: ""
+#listener_tcp_tls_min_version: "tls12"
+#listener_tcp_tls_cipher_suites: ""
+#listener_tcp_tls_prefer_server_cipher_suites: "false"
+#listener_tcp_tls_require_and_verify_client_cert: "false"
+#listener_tcp_tls_client_ca_file: ""
+#listener_tcp_tls_disable_client_certs: "false"
+#listener_tcp_x_forwarded_for_authorized_addrs: ""
+#listener_tcp_x_forwarded_for_hop_skips: "0"
+#listener_tcp_x_forwarded_for_reject_not_authorized: "true"
+#listener_tcp_x_forwarded_for_reject_not_present: "true"
+#listener_tcp_unauthenticated_metrics_access: "false"
 
 # Telemetry
 telemetry_enabled: false
@@ -77,3 +79,7 @@ telemetry_prometheus_enabled: false
 telemetry_prometheus_retention_time: "24h"
 # TODO: Seals
 #   - https://www.vaultproject.io/docs/configuration/seal/index.html
+
+# OS Settings
+configure_firewalld: false
+configure_selinux: false
