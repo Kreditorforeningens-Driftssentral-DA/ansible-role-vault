@@ -21,7 +21,7 @@ def test_pkg(host, pkg):
     assert package.is_installed
 
 
-@pytest.mark.parametrize('svc', ['nomad'])
+@pytest.mark.parametrize('svc', ['vault'])
 def test_svc(host, svc):
     service = host.service(svc)
     assert service.is_enabled

@@ -2,7 +2,9 @@
 # {{ ansible_managed }}
 ################################################################################
 
-ANSIBLE_VAULT_VERSION={{ version }}
+VAULT_VERSION={{ version }}
+VAULT_ADDR="http{% if not listener_tcp_tls_disable %}s{% endif %}://127.0.0.1:8200"
+
 if [ -d "{{ path_binaries }}" ] ; then
   PATH="$PATH:{{ path_binaries }}"
 fi

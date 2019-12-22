@@ -28,8 +28,8 @@ storage "file" {
 #                                                             Listener settings
 # ------------------------------------------------------------------------------
 
-api_addr     = "{{ ha_api_address | default(ansible_default_ipv4['address']) }}"
-cluster_addr = "{{ ha_cluster_address | default(ansible_default_ipv4['address']) }}"
+api_addr     = "https://{{ ha_api_address | default(ansible_default_ipv4['address']) }}:8200"
+#cluster_addr = "https://{{ ha_cluster_address | default(ansible_default_ipv4['address']) }}:8201"
 
 {% if listener_local_enabled %}
 listener "tcp" {
@@ -40,7 +40,7 @@ listener "tcp" {
 
 {% if listener_enabled %}
 listener "tcp" {
-  address     = "{{ listener_tcp_address | default(ansible_default_ipv4['address']) }}"
+  address     = "{{ listener_tcp_address | default(ansible_default_ipv4['address']) }}:8200"
   tls_disable = "{{ listener_tcp_tls_disable | default('false') }}"
 }
 {% endif %}

@@ -30,7 +30,7 @@ dependency:
 driver:
   name: docker
 
-template: &vault-agent
+template: &agent
   image: "${TEST_IMAGE:-'centos:7'}"
   command: "${TEST_IMAGE_CMD:-'/usr/sbin/init'}"
   environment:
@@ -47,7 +47,7 @@ platforms:
   - name: mlc-instance-1
     groups:
       - standalone
-    <<: *vault-agent
+    <<: *agent
 
 # ------------------------------------------------------------------------------
 
